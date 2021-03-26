@@ -15,8 +15,10 @@ class ViewController: UIViewController {
     @IBOutlet var pkrCoffeeType : UIPickerView!
     
     let coffeeTypeList = ["Dark Roast", "Original Blend", "Vanilla", "Espresso", "Americano", "Cappuccino", "Mocha", "Macchiato"]
-    var newOrder = Order()
-    var allOrders = [Order]()
+    
+    private let dbHelper = DatabaseHelper.getInstance()
+    
+    var allOrders : [Orders] = [Orders]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,12 +35,16 @@ class ViewController: UIViewController {
     
     @IBAction func submitOrder() {
         if (!self.tfQuantity.text!.isEmpty){
-            newOrder.quantity = Int(self.tfQuantity.text!)!
-            newOrder.size = self.segSize.titleForSegment(at: self.segSize.selectedSegmentIndex)!
-            newOrder.coffeeType = self.coffeeTypeList[self.pkrCoffeeType.selectedRow(inComponent: 0)]
             
-            allOrders.append(newOrder)
+            let quantity = Int32(self.tfQuantity.text!)!
+            let size = self.segSize.titleForSegment(at: self.segSize.selectedSegmentIndex)!
+            let coffeeType = self.coffeeTypeList[self.pkrCoffeeType.selectedRow(inComponent: 0)]
+            let newOrder = Order(coffeeType: coffeeType, size: size, quantity: quantity)
             
+            self.dbHelper.insertOrder(newOrder : newOrder)
+            
+            
+            //allOrders.append(newOrder)
         }else {
             let alert = UIAlertController(title: "Error", message: "Please enter Quantity!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
@@ -52,10 +58,11 @@ class ViewController: UIViewController {
         
         let orderVC = storyboard.instantiateViewController(identifier: "TableView") as! OrdersTableViewController
         
-        orderVC.allOrders = allOrders
+        //orderVC.allOrders = allOrders
         
         self.navigationController?.pushViewController(orderVC, animated: true)
     }
+    
 }
 
 extension ViewController : UIPickerViewDelegate, UIPickerViewDataSource{

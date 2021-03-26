@@ -10,7 +10,7 @@ import Foundation
 struct Order{
     var coffeeType : String
     var size : String
-    var quantity : Int
+    var quantity : Int32
     
     init() {
         self.coffeeType = ""
@@ -18,7 +18,7 @@ struct Order{
         self.quantity = 0
     }
     
-    init(coffeeType : String, size : String, quantity : Int){
+    init(coffeeType : String, size : String, quantity : Int32){
         self.coffeeType = coffeeType
         self.size = size
         self.quantity = quantity
